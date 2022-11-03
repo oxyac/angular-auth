@@ -41,7 +41,7 @@ export class AuthComponent {
       resData => {
         console.log(resData);
         this.isLoading = false;
-        this.router.navigate(['/home']);
+        this.router.navigate(['/crud']);
       },
       errorMessage => {
         console.log(errorMessage);

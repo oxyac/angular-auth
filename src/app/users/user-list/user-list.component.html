@@ -1,0 +1,179 @@
+<div class="card">
+
+  <p-table #dt [value]="users" [(selection)]="selectedUsers"
+           [globalFilterFields]="['name', 'phone']" [rowHover]="true"
+           dataKey="id" editMode="row" responsiveLayout="scroll">
+
+    <ng-template pTemplate="header">
+      <tr>
+        <th>
+          <button pButton pRipple label="" icon="pi pi-trash" class="p-button-danger" (click)="deleteSelectedUsers()"
+                  [disabled]="!selectedUsers || !selectedUsers.length"></button>
+        </th>
+        <th></th>
+        <th>
+          <p-columnFilter type="text" field="name"></p-columnFilter>
+        </th>
+        <th>
+          <p-columnFilter type="text" field="surname"></p-columnFilter>
+        </th>
+        <th>
+          <p-columnFilter type="text" field="password"></p-columnFilter>
+        </th>
+        <th>
+          <p-columnFilter type="text" field="phone"></p-columnFilter>
+        </th>
+        <th></th>
+        <th style="width:12rem">
+          <button pButton pRipple label="New" icon="pi pi-plus" class="p-button-success p-mr-2"
+                  (click)="openNew()"></button>
+        </th>
+      </tr>
+      <tr>
+        <th style="width: 3rem;text-align: center;">
+          <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+        </th>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Surname</th>
+        <th>Password</th>
+        <th>Phone</th>
+        <th>Title</th>
+        <th style="width:12rem"></th>
+      </tr>
+
+    </ng-template>
+    <ng-template pTemplate="body" let-user let-editing="editing" let-ri="rowIndex">
+      <tr [pEditableRow]="user">
+        <td style="text-align: center;">
+          <p-tableCheckbox [value]="user"></p-tableCheckbox>
+        </td>
+        <td>
+          {{user.id}}
+        </td>
+
+        <td>
+          <p-cellEditor>
+            <ng-template pTemplate="input">
+              <input pInputText type="text" [(ngModel)]="user.name">
+            </ng-template>
+            <ng-template pTemplate="output">
+              {{user.name}}
+            </ng-template>
+          </p-cellEditor>
+        </td>
+
+        <td>
+          <p-cellEditor>
+            <ng-template pTemplate="input">
+              <input pInputText type="text" [(ngModel)]="user.surname" required>
+            </ng-template>
+            <ng-template pTemplate="output">
+              {{user.surname}}
+            </ng-template>
+          </p-cellEditor>
+        </td>
+
+        <td>
+          <p-cellEditor>
+            <ng-template pTemplate="input">
+              <input pInputText type="text" [(ngModel)]="user.password" required>
+            </ng-template>
+            <ng-template pTemplate="output">
+              {{user.password}}
+            </ng-template>
+          </p-cellEditor>
+        </td>
+
+        <td>
+          <p-cellEditor>
+            <ng-template pTemplate="input">
+              <input pInputText type="text" [(ngModel)]="user.phone" required>
+            </ng-template>
+            <ng-template pTemplate="output">
+              {{user.phone}}
+            </ng-template>
+          </p-cellEditor>
+        </td>
+
+        <td>
+          <p-cellEditor>
+            <ng-template pTemplate="input">
+              <p-dropdown [options]="titles" appendTo="body" [(ngModel)]="user.title"
+                          [style]="{'width':'100%'}"></p-dropdown>
+            </ng-template>
+            <ng-template pTemplate="output">
+              {{user.title}}
+            </ng-template>
+          </p-cellEditor>
+        </td>
+
+        <td >
+          <button *ngIf="!editing" pButton pRipple type="button" pInitEditableRow icon="pi pi-pencil"
+                  (click)="onRowEditInit(user)" class="p-button-rounded p-button-text"></button>
+          <button *ngIf="editing" pButton pRipple type="button" pSaveEditableRow icon="pi pi-check"
+                  (click)="onRowEditSave(user)" class="p-button-rounded p-button-text p-button-success mr-2"></button>
+          <button *ngIf="editing" pButton pRipple type="button" pCancelEditableRow icon="pi pi-times"
+                  (click)="onRowEditCancel(user, ri)" class="p-button-rounded p-button-text p-button-danger"></button>
+
+          <button pButton pRipple type="button" icon="pi pi-eye"
+                  (click)="editUser(user)" class="p-button-rounded p-button-text"></button>
+          <button pButton pRipple type="button" icon="pi pi-trash"
+                  (click)="deleteUser(user)" class="p-button-rounded p-button-text"></button>
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+</div>
+
+
+<p-dialog [(visible)]="formDialog" [style]="{width: '450px'}" header="User Details" [modal]="true"
+          styleClass="p-fluid">
+  <ng-template pTemplate="content">
+    <div class="p-field">
+      <label for="name">Name</label>
+      <input type="text" pInputText id="name" [(ngModel)]="user.name" required autofocus/>
+      <small class="p-invalid" *ngIf="submitted && !user.name">Name is required.</small>
+    </div>
+    <div class="p-field">
+      <label for="name">Surname</label>
+      <input type="text" pInputText id="surname" [(ngModel)]="user.surname" required autofocus/>
+      <small class="p-invalid" *ngIf="submitted && !user.surname">Surname is required.</small>
+    </div>
+    <div class="p-field">
+      <label for="name">Password</label>
+      <input type="text" pInputText id="password" [(ngModel)]="user.password" required autofocus/>
+      <small class="p-invalid" *ngIf="submitted && !user.password">Surname is required.</small>
+    </div>
+    <div class="p-field">
+      <label for="name">Phone</label>
+      <input type="text" pInputText id="phone" [(ngModel)]="user.phone" required autofocus/>
+      <small class="p-invalid" *ngIf="submitted && !user.phone">phone is required.</small>
+    </div>
+
+    <div class="p-field">
+      <label class="p-mb-3">Title</label>
+      <div class="p-formgrid p-grid">
+        <div class="p-field-radiobutton p-col-6">
+          <p-radioButton id="category1" name="title" value="AM" [(ngModel)]="user.title"></p-radioButton>
+          <label for="category1">Acount Manager</label>
+        </div>
+        <div class="p-field-radiobutton p-col-6">
+          <p-radioButton id="category2" name="title" value="PM" [(ngModel)]="user.title"></p-radioButton>
+          <label for="category2">Project Manager</label>
+        </div>
+        <div class="p-field-radiobutton p-col-6">
+          <p-radioButton id="category3" name="title" value="PG" [(ngModel)]="user.title"></p-radioButton>
+          <label for="category3">Software Developer</label>
+        </div>
+      </div>
+    </div>
+  </ng-template>
+
+  <ng-template pTemplate="footer">
+    <button pButton pRipple label="Cancel" icon="pi pi-times" class="p-button-text" (click)="hideDialog()"></button>
+    <button pButton pRipple label="Save" icon="pi pi-check" class="p-button-text" (click)="saveUser()"></button>
+  </ng-template>
+</p-dialog>
+
+<p-confirmDialog [style]="{width: '450px'}"></p-confirmDialog>
